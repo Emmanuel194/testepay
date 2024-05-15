@@ -1,0 +1,220 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API de transações e payables",
+    "description": "API para gerenciamento de transações e payables"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "transactions",
+      "description": "Operações relacionadas às transações"
+    },
+    {
+      "name": "payables",
+      "description": "Operações relacionadas aos payables"
+    }
+  ],
+  "paths": {
+    "/transaction": {
+      "post": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Cria uma nova transação",
+        "description": "Cria uma nova transação com cartão de crédito ou PIX",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Objeto de transação",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transação criada com sucesso"
+          },
+          "500": {
+            "description": "Erro ao processar transação"
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Obtém todas as transações",
+        "description": "Retorna uma lista de todas as transações",
+        "responses": {
+          "200": {
+            "description": "Lista de transações retornada com sucesso"
+          },
+          "500": {
+            "description": "Erro ao buscar transações"
+          }
+        }
+      }
+    },
+    "/transactions/{cpf}": {
+      "get": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Obtém transações por CPF",
+        "description": "Retorna transações para um CPF específico",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "CPF do cliente para buscar transações"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transações retornadas com sucesso"
+          },
+          "500": {
+            "description": "Erro ao buscar transações por CPF"
+          }
+        }
+      }
+    },
+    "/payable": {
+      "post": {
+        "tags": [
+          "payables"
+        ],
+        "summary": "Cria um novo payable",
+        "description": "Cria um novo payable baseado em uma transação",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Objeto de payable",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payable"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payable criado com sucesso"
+          },
+          "500": {
+            "description": "Erro ao processar payable"
+          }
+        }
+      }
+    },
+    "/balance/{cpf}": {
+      "get": {
+        "tags": [
+          "payables"
+        ],
+        "summary": "Obtém o saldo do cliente",
+        "description": "Retorna o saldo disponível para um CPF específico",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "CPF do cliente para buscar saldo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saldo retornado com sucesso"
+          },
+          "500": {
+            "description": "Erro ao buscar saldo"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "example": 15000
+        },
+        "description": {
+          "type": "string",
+          "example": "Café pasd"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "credit_card",
+            "pix"
+          ],
+          "example": "credit_card"
+        },
+        "name": {
+          "type": "string",
+          "example": "John Dqasde"
+        },
+        "cpf": {
+          "type": "integer",
+          "format": "int64",
+          "example": 12345678900
+        },
+        "card_number": {
+          "type": "string",
+          "example": "3453453456"
+        },
+        "valid": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1223
+        },
+        "cvv": {
+          "type": "integer",
+          "format": "int32",
+          "example": 123
+        }
+      },
+      "required": [
+        "amount",
+        "description",
+        "method",
+        "name",
+        "cpf"
+      ]
+    },
+    "Payable": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/Transaction"
+        }
+      },
+      "required": [
+        "transaction"
+      ]
+    }
+  }
+}
