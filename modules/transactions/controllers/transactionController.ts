@@ -45,9 +45,7 @@ export async function handleTransaction(
   }
 }
 
-// function generateUniqueId(): string {
-//   return uuidv4();
-// }
+
 
 //  Function para listar transações.
 
